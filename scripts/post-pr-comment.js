@@ -19,6 +19,8 @@ module.exports = async ({ github, context, core }) => {
     imagesOutput = 'No image validation output';
   }
   
+  const stripAnsi = (str) => str.replace(/\x1b\[[0-9;]*m/g, '');
+  
   const warnings = validationOutput.match(/\[warn\].*$/gm) || [];
   const errors = validationOutput.match(/\[error\].*$/gm) || [];
   const imageErrors = imagesOutput.match(/\[error\].*$/gm) || [];
@@ -35,7 +37,7 @@ module.exports = async ({ github, context, core }) => {
     if (allErrors.length > 0) {
       comment += '### ❌ Errors\n\n';
       allErrors.forEach(err => {
-        const cleanErr = err.replace(/\[error\]\s*/, '');
+        const cleanErr = stripAnsi(err.replace(/\[error\]\s*/, ''));
         comment += `- 🔴 ${cleanErr}\n`;
       });
       comment += '\n';
@@ -44,7 +46,7 @@ module.exports = async ({ github, context, core }) => {
     if (warnings.length > 0) {
       comment += '### ⚠️ Warnings\n\n';
       warnings.forEach(warn => {
-        const cleanWarn = warn.replace(/\[warn\]\s*/, '');
+        const cleanWarn = stripAnsi(warn.replace(/\[warn\]\s*/, ''));
         comment += `- 🟡 ${cleanWarn}\n`;
       });
       comment += '\n';
