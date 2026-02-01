@@ -25,7 +25,7 @@ module.exports = async ({ github, context, core }) => {
   const errors = validationOutput.match(/\[error\].*$/gm) || [];
   const imageErrors = imagesOutput.match(/\[error\].*$/gm) || [];
   
-  const allErrors = [...errors, ...imageErrors];
+  const allErrors = [...new Set([...errors, ...imageErrors])];
   
   const checkedFolders = process.env.CHECKED_FOLDERS || 'N/A';
   
